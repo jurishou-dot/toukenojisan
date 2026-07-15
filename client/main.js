@@ -15,56 +15,60 @@ let activeMinigame = null;
 let plantingSlotId = null;
 
 // UIバインディング
-const elements = {
-  // ステータス
-  gold: document.getElementById('status-gold'),
-  level: document.getElementById('status-level'),
-  xpFill: document.getElementById('status-xp-fill'),
-  fatigueVal: document.getElementById('status-fatigue-val'),
-  fatigueFill: document.getElementById('status-fatigue-fill'),
-  motivationVal: document.getElementById('status-motivation-val'),
-  motivationFill: document.getElementById('status-motivation-fill'),
-  happiness: document.getElementById('status-happiness'),
-  trust: document.getElementById('status-trust'),
-  uncleBalloon: document.getElementById('uncle-balloon'),
-  
-  // コンテナ
-  farmGrid: document.getElementById('farm-grid'),
-  forgeMaterials: document.getElementById('forge-materials'),
-  recipeGrid: document.getElementById('recipe-grid'),
-  weaponList: document.getElementById('weapon-list'),
-  noWeaponsMsg: document.getElementById('no-weapons-msg'),
-  shopUpgrades: document.getElementById('shop-upgrades'),
-  shopConsumables: document.getElementById('shop-consumables'),
-  achievementList: document.getElementById('achievement-list'),
-  
-  // ボタン・タブ
-  navButtons: document.querySelectorAll('.nav-btn'),
-  tabPanes: document.querySelectorAll('.tab-pane'),
-  sellAllBtn: document.getElementById('sell-all-btn'),
-  manualSaveBtn: document.getElementById('manual-save-btn'),
-  manualLoadBtn: document.getElementById('manual-load-btn'),
-  resetDataBtn: document.getElementById('reset-data-btn'),
-  
-  // モーダル
-  forgeModal: document.getElementById('forge-modal'),
-  forgeCancelBtn: document.getElementById('forge-cancel-btn'),
-  offlineModal: document.getElementById('offline-modal'),
-  offlineConfirmBtn: document.getElementById('offline-confirm-btn'),
-  offlineTimeStr: document.getElementById('offline-time-str'),
-  offlineReportList: document.getElementById('offline-report-list'),
-  plantModal: document.getElementById('plant-modal'),
-  plantCloseBtn: document.getElementById('plant-close-btn'),
-  seedSelectionList: document.getElementById('seed-selection-list'),
-  
-  // デバッグ
-  debugTime1h: document.getElementById('debug-time-1h'),
-  debugTime6h: document.getElementById('debug-time-6h'),
-  debugTime24h: document.getElementById('debug-time-24h'),
-  debugAddGold: document.getElementById('debug-add-gold'),
-  debugRecoverFatigue: document.getElementById('debug-recover-fatigue'),
-  debugGiveMaterials: document.getElementById('debug-give-materials')
-};
+let elements = {};
+
+function initElements() {
+  elements = {
+    // ステータス
+    gold: document.getElementById('status-gold'),
+    level: document.getElementById('status-level'),
+    xpFill: document.getElementById('status-xp-fill'),
+    fatigueVal: document.getElementById('status-fatigue-val'),
+    fatigueFill: document.getElementById('status-fatigue-fill'),
+    motivationVal: document.getElementById('status-motivation-val'),
+    motivationFill: document.getElementById('status-motivation-fill'),
+    happiness: document.getElementById('status-happiness'),
+    trust: document.getElementById('status-trust'),
+    uncleBalloon: document.getElementById('uncle-balloon'),
+    
+    // コンテナ
+    farmGrid: document.getElementById('farm-grid'),
+    forgeMaterials: document.getElementById('forge-materials'),
+    recipeGrid: document.getElementById('recipe-grid'),
+    weaponList: document.getElementById('weapon-list'),
+    noWeaponsMsg: document.getElementById('no-weapons-msg'),
+    shopUpgrades: document.getElementById('shop-upgrades'),
+    shopConsumables: document.getElementById('shop-consumables'),
+    achievementList: document.getElementById('achievement-list'),
+    
+    // ボタン・タブ
+    navButtons: document.querySelectorAll('.nav-btn'),
+    tabPanes: document.querySelectorAll('.tab-pane'),
+    sellAllBtn: document.getElementById('sell-all-btn'),
+    manualSaveBtn: document.getElementById('manual-save-btn'),
+    manualLoadBtn: document.getElementById('manual-load-btn'),
+    resetDataBtn: document.getElementById('reset-data-btn'),
+    
+    // モーダル
+    forgeModal: document.getElementById('forge-modal'),
+    forgeCancelBtn: document.getElementById('forge-cancel-btn'),
+    offlineModal: document.getElementById('offline-modal'),
+    offlineConfirmBtn: document.getElementById('offline-confirm-btn'),
+    offlineTimeStr: document.getElementById('offline-time-str'),
+    offlineReportList: document.getElementById('offline-report-list'),
+    plantModal: document.getElementById('plant-modal'),
+    plantCloseBtn: document.getElementById('plant-close-btn'),
+    seedSelectionList: document.getElementById('seed-selection-list'),
+    
+    // デバッグ
+    debugTime1h: document.getElementById('debug-time-1h'),
+    debugTime6h: document.getElementById('debug-time-6h'),
+    debugTime24h: document.getElementById('debug-time-24h'),
+    debugAddGold: document.getElementById('debug-add-gold'),
+    debugRecoverFatigue: document.getElementById('debug-recover-fatigue'),
+    debugGiveMaterials: document.getElementById('debug-give-materials')
+  };
+}
 
 // おじさんの定常セリフ集
 const NORMAL_BALLOONS = [
@@ -80,6 +84,9 @@ const NORMAL_BALLOONS = [
 
 // 初期起動処理
 window.addEventListener('DOMContentLoaded', async () => {
+  // DOM要素を紐付け
+  initElements();
+
   // SDKの初期化
   const sdkInfo = await initDiscordSdk() || {};
   currentUser = sdkInfo.user || { id: 'local_user', username: 'ブラックおじさん(ゲスト)' };
