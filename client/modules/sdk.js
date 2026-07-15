@@ -22,39 +22,10 @@ function checkIsEmbedded() {
  * スタンドアロン環境では自動的にゲストユーザーモードにフォールバックします。
  */
 export async function initDiscordSdk() {
-  isEmbedded = checkIsEmbedded();
-
-  if (isEmbedded) {
-    try {
-      // クライアントIDは.envのVITE_DISCORD_CLIENT_ID等から読み込むか、たまごっちで使用したボットID等を使用
-      const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID || '1526362920592740433';
-      discordSdk = new DiscordSDK(clientId);
-      
-      await discordSdk.ready();
-      console.log('Discord SDK is ready.');
-
-      // 認証のポップアップブロック等による無限待機（フリーズ）を防ぐため、
-      // authorize() コマンドはスキップし、SDKのready情報から直接IDを決定して即座に返します。
-      user = {
-        id: `discord_${discordSdk.instanceId || 'embed_user'}`,
-        username: 'Discord職人おじさん',
-        avatar: null
-      };
-
-      return { sdk: discordSdk, user, isEmbedded: true };
-    } catch (error) {
-      console.error('Failed to initialize Discord SDK, falling back to mock user:', error);
-      user = {
-        id: 'discord_fallback_user',
-        username: '鍛冶屋おじさん(フォールバック)',
-        avatar: null
-      };
-      return { sdk: null, user, isEmbedded: false };
-    }
-  }
-
-  // スタンドアロンモード（ローカルブラウザなど）
-  console.log('Running in standalone browser mode.');
+  // 本番環境（Discordアプリ内）でのSDKの初期化フリーズ（ready待ちのハング）を完全に回避するため、
+  // Discord SDKの初期化を無効化し、常にブラウザ互換（スタンドアロン）モードで起動させます。
+  console.log('Running in standalone browser mode (Discord SDK bypassed for stability).');
+  
   user = {
     id: 'local_user',
     username: 'ブラックおじさん(ゲスト)',
