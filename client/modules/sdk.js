@@ -61,7 +61,13 @@ export async function initDiscordSdk() {
 
       return { sdk: discordSdk, user, isEmbedded: true };
     } catch (error) {
-      console.error('Failed to initialize Discord SDK:', error);
+      console.error('Failed to initialize Discord SDK, falling back to mock user:', error);
+      user = {
+        id: 'discord_fallback_user',
+        username: '鍛冶屋おじさん(フォールバック)',
+        avatar: null
+      };
+      return { sdk: null, user, isEmbedded: false };
     }
   }
 

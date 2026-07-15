@@ -81,8 +81,8 @@ const NORMAL_BALLOONS = [
 // 初期起動処理
 window.addEventListener('DOMContentLoaded', async () => {
   // SDKの初期化
-  const sdkInfo = await initDiscordSdk();
-  currentUser = sdkInfo.user;
+  const sdkInfo = await initDiscordSdk() || {};
+  currentUser = sdkInfo.user || { id: 'local_user', username: 'ブラックおじさん(ゲスト)' };
   
   console.log('User detected:', currentUser);
   
@@ -102,7 +102,8 @@ window.addEventListener('DOMContentLoaded', async () => {
  */
 async function loadGameData() {
   try {
-    const response = await fetch(`/api/load?userId=${encodeURIComponent(currentUser.id)}`);
+    const userId = currentUser?.id || 'local_user';
+    const response = await fetch(`/api/load?userId=${encodeURIComponent(userId)}`);
     const result = await response.json();
     
     if (result.success && !result.isNew && result.data) {
