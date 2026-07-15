@@ -11,6 +11,25 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+  <!-- グローバルエラーレポーター（デバッグ用） -->
+  <div id="error-reporter" style="display:none; background:#d90429; color:white; padding:12px; font-family:monospace; font-size:12px; z-index:9999; position:fixed; top:0; left:0; width:100%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); word-break: break-all;"></div>
+  <script>
+    window.addEventListener('error', function(e) {
+      var reporter = document.getElementById('error-reporter');
+      if (reporter) {
+        reporter.style.display = 'block';
+        reporter.innerHTML = '<strong>⚠️ 実行エラー発生:</strong> ' + e.message + '<br><small>場所: ' + e.filename + ' (行: ' + e.lineno + ', 列: ' + e.colno + ')</small>';
+      }
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      var reporter = document.getElementById('error-reporter');
+      if (reporter) {
+        reporter.style.display = 'block';
+        reporter.innerHTML = '<strong>⚠️ 非同期エラー発生:</strong> ' + e.reason + '<br><small>非同期処理でエラーが発生しました。</small>';
+      }
+    });
+  </script>
+
   <div id="app" class="game-container">
     
     <!-- メインヘッダー -->
