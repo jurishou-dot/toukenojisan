@@ -109,11 +109,33 @@ async function loadGameData() {
       // 既存データの読み込みとマージ
       const initial = createInitialData();
       state = {
-        player: { ...initial.player, ...result.data.player },
-        farm: { ...initial.farm, ...result.data.farm },
-        inventory: { ...initial.inventory, ...result.data.inventory },
-        shop: { ...initial.shop, ...result.data.shop },
-        achievement: { ...initial.achievement, ...result.data.achievement }
+        player: {
+          ...initial.player,
+          ...result.data.player,
+          tools: { ...initial.player.tools, ...(result.data.player?.tools) },
+          stats: { ...initial.player.stats, ...(result.data.player?.stats) }
+        },
+        farm: {
+          ...initial.farm,
+          ...result.data.farm,
+          slots: result.data.farm?.slots || initial.farm.slots
+        },
+        inventory: {
+          ...initial.inventory,
+          ...result.data.inventory,
+          materials: { ...initial.inventory.materials, ...(result.data.inventory?.materials) },
+          weapons: result.data.inventory?.weapons || initial.inventory.weapons
+        },
+        shop: {
+          ...initial.shop,
+          ...result.data.shop,
+          seeds: { ...initial.shop.seeds, ...(result.data.shop?.seeds) }
+        },
+        achievement: {
+          ...initial.achievement,
+          ...result.data.achievement,
+          completed: { ...initial.achievement.completed, ...(result.data.achievement?.completed) }
+        }
       };
       
       // 放置処理（オフラインプログレス）の実行
