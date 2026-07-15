@@ -1,0 +1,23 @@
+{
+  "name": "black-smith-uncle",
+  "version": "1.0.0",
+  "description": "ブラック刀鍛冶おじさん 〜聖剣農場〜",
+  "main": "server.js",
+  "scripts": {
+    "dev:server": "nodemon server.js",
+    "dev:client": "vite client",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "vite build client --outDir ../dist",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@discord/embedded-app-sdk": "^1.1.2",
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.4",
+    "vite": "^5.3.3"
+  }
+}

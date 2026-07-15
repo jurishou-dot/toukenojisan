@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブラック刀鍛冶おじさん 〜聖剣農場〜</title>
+  <!-- レトロゲーム用の等幅フォントとして Google Fonts から Noto Sans JP をロード -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="app" class="game-container">
+    
+    <!-- メインヘッダー -->
+    <header class="game-header">
+      <h1 class="main-title">ブラック刀鍛冶おじさん</h1>
+      <p class="subtitle">～聖剣農場～</p>
+    </header>
+
+    <!-- キャラクター＆ステータスセクション -->
+    <section class="status-section">
+      <div class="character-art">
+        <pre>
+　　　／￣￣＼
+　　( ・∀・ )
+　　&lt;|===|&gt;
+　　 /　　\\
+        </pre>
+        <div class="uncle-balloon" id="uncle-balloon">今日も元気に聖剣を作るぞ！🔨</div>
+      </div>
+      
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-label">所持金</span>
+          <span class="status-value gold-value" id="status-gold">500</span><span class="gold-unit">G</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">レベル</span>
+          <span class="status-value" id="status-level">1</span>
+          <div class="xp-bar-container">
+            <div class="xp-bar-fill" id="status-xp-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="status-item">
+          <span class="status-label">疲労 (100で行動不能)</span>
+          <span class="status-value" id="status-fatigue-val">0</span>
+          <div class="status-bar-container">
+            <div class="status-bar-fill fatigue-fill" id="status-fatigue-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="status-item">
+          <span class="status-label">やる気 (成功率・速度)</span>
+          <span class="status-value" id="status-motivation-val">80</span>
+          <div class="status-bar-container">
+            <div class="status-bar-fill motivation-fill" id="status-motivation-fill" style="width: 80%"></div>
+          </div>
+        </div>
+        <div class="status-item">
+          <span class="status-label">幸福度</span>
+          <span class="status-value" id="status-happiness">50</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">信頼度</span>
+          <span class="status-value" id="status-trust">10</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- タブナビゲーション -->
+    <nav class="game-nav">
+      <button class="nav-btn active" data-tab="farm">🌱 畑</button>
+      <button class="nav-btn" data-tab="forge">🔨 鍛冶場</button>
+      <button class="nav-btn" data-tab="sell">📦 売却所</button>
+      <button class="nav-btn" data-tab="shop">🛒 商店</button>
+      <button class="nav-btn" data-tab="achievement">🏆 実績</button>
+      <button class="nav-btn" data-tab="settings">⚙ 設定</button>
+    </nav>
+
+    <!-- メインコンテンツエリア -->
+    <main class="game-content">
+      
+      <!-- 畑タブ -->
+      <div id="tab-farm" class="tab-pane active">
+        <h2 class="section-title">🌱 鉱石栽培ファーム</h2>
+        <p class="section-desc">種を植えて鉱石を育てよう。ゲームを閉じている間も成長するぞ！</p>
+        <div class="farm-grid" id="farm-grid">
+          <!-- JSで動的に追加されます -->
+        </div>
+      </div>
+
+      <!-- 鍛冶場タブ -->
+      <div id="tab-forge" class="tab-pane">
+        <h2 class="section-title">🔨 武器鍛造所</h2>
+        <p class="section-desc">手持ちの鉱石を消費して武器を鍛える。疲労が100になると作業できない。</p>
+        <div class="inventory-hint">
+          <h3>所持素材一覧：</h3>
+          <div class="material-list" id="forge-materials">
+            <!-- JSで動的に追加されます -->
+          </div>
+        </div>
+        <div class="recipe-grid" id="recipe-grid">
+          <!-- JSで動的に追加されます -->
+        </div>
+      </div>
+
+      <!-- 売却所タブ -->
+      <div id="tab-sell" class="tab-pane">
+        <h2 class="section-title">📦 完成品売却所</h2>
+        <p class="section-desc">鍛え上げた武器を売ってお金を稼ぐ。街の人々の「信頼度」が高いと高値で売れるぞ。</p>
+        <div class="sell-header">
+          <button id="sell-all-btn" class="pixel-btn danger-btn">完成品を一括売却する</button>
+        </div>
+        <div class="weapon-list-container">
+          <table class="pixel-table">
+            <thead>
+              <tr>
+                <th>武器名</th>
+                <th>品質</th>
+                <th>基本価値</th>
+                <th>補正後価格</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="weapon-list">
+              <!-- JSで動的に追加されます -->
+            </tbody>
+          </table>
+          <p id="no-weapons-msg" class="empty-msg">売却できる武器がありません。鍛冶場で作りましょう。</p>
+        </div>
+      </div>
+
+      <!-- 商店タブ -->
+      <div id="tab-shop" class="tab-pane">
+        <h2 class="section-title">🛒 よろず商店</h2>
+        <p class="section-desc">各種設備のアップグレードや、消耗品を購入できます。</p>
+        
+        <div class="shop-section">
+          <h3>設備アップグレード</h3>
+          <div class="shop-grid" id="shop-upgrades">
+            <!-- JSで動的に追加されます -->
+          </div>
+        </div>
+
+        <div class="shop-section">
+          <h3>消耗品・種の購入</h3>
+          <div class="shop-grid" id="shop-consumables">
+            <!-- JSで動的に追加されます -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 実績タブ -->
+      <div id="tab-achievement" class="tab-pane">
+        <h2 class="section-title">🏆 工房の実績</h2>
+        <p class="section-desc">特定の条件をクリアすると、実績が解放されます。</p>
+        <div class="achievement-list" id="achievement-list">
+          <!-- JSで動的に追加されます -->
+        </div>
+      </div>
+
+      <!-- 設定・その他タブ -->
+      <div id="tab-settings" class="tab-pane">
+        <h2 class="section-title">⚙ 設定・開発者ツール</h2>
+        <p class="section-desc">手動セーブや、データのリセット、テスト用のデバッグツールを使用できます。</p>
+        
+        <div class="settings-box">
+          <h3>セーブデータ操作</h3>
+          <div class="settings-row">
+            <button id="manual-save-btn" class="pixel-btn">手動セーブ (JSON書き出し)</button>
+            <button id="manual-load-btn" class="pixel-btn">手動ロード</button>
+            <button id="reset-data-btn" class="pixel-btn danger-btn">データ初期化</button>
+          </div>
+        </div>
+
+        <div class="settings-box debug-box">
+          <h3>🔧 デバッグツール (開発・動作検証用)</h3>
+          <p class="debug-desc">放置時間のシミュレーションや、ステータスの増減を瞬時に行うことができます。</p>
+          <div class="settings-row">
+            <button id="debug-time-1h" class="pixel-btn debug-btn">⏰ 1時間時間を進める (栽培・放置回復)</button>
+            <button id="debug-time-6h" class="pixel-btn debug-btn">⏰ 6時間時間を進める</button>
+            <button id="debug-time-24h" class="pixel-btn debug-btn">⏰ 24時間時間を進める</button>
+          </div>
+          <div class="settings-row" style="margin-top: 10px;">
+            <button id="debug-add-gold" class="pixel-btn debug-btn">💰 +1000G 獲得</button>
+            <button id="debug-recover-fatigue" class="pixel-btn debug-btn">🥤 疲労を 0 にする</button>
+            <button id="debug-give-materials" class="pixel-btn debug-btn">🪨 全素材 +10個獲得</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- コピーライト -->
+    <footer class="game-footer">
+      <p>© 2026 Black Smith Uncle Workshop. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+
+  <!-- 鍛冶ミニゲームモーダル -->
+  <div id="forge-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🔨 武器の鍛造中...</h2>
+      </div>
+      <div class="modal-body" id="forge-game-container">
+        <!-- JSで ForgeMinigame がここに挿入されます -->
+      </div>
+      <div class="modal-footer">
+        <button id="forge-cancel-btn" class="pixel-btn danger-btn">中断する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- オフライン放置成果報告モーダル -->
+  <div id="offline-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💤 おかえりなさい、おじさん！</h2>
+      </div>
+      <div class="modal-body">
+        <p>あなたが休んでいた時間：<strong id="offline-time-str">0時間0分0秒</strong></p>
+        <div class="offline-report-box">
+          <h3>放置中の成果：</h3>
+          <ul id="offline-report-list">
+            <!-- JSで動的に追加されます -->
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="offline-confirm-btn" class="pixel-btn active">今日も働く！</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 栽培時の種選択モーダル -->
+  <div id="plant-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🌱 何を植えますか？</h2>
+        <button id="plant-close-btn" class="close-x-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="seed-selection-list" id="seed-selection-list">
+          <!-- JSで動的に追加されます -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS エントリーポイント -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,868 @@
+/* 全体定義とベーススタイル */
+:root {
+  --bg-color: #1a1a1c;
+  --panel-bg: #26262b;
+  --text-color: #e2e2e7;
+  --text-muted: #8e8e93;
+  --border-color: #48484a;
+  
+  --primary-color: #e07a5f; /* 炉の火をイメージしたオレンジ */
+  --primary-hover: #f39a82;
+  --accent-color: #3d85c6; /* 水桶をイメージした青 */
+  --accent-hover: #5ea1db;
+  
+  --success-color: #2ec4b6;
+  --danger-color: #e63946;
+  
+  --font-pixel: 'Courier Prime', monospace;
+  --font-sans: 'Noto Sans JP', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ゲーム全体のコンテナ */
+.game-container {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--panel-bg);
+  border: 4px double var(--border-color);
+  padding: 15px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+/* ヘッダー */
+.game-header {
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.main-title {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  color: var(--primary-color);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* おじさんのアスキーアート ＆ ステータスエリア */
+.status-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+@media (min-width: 600px) {
+  .status-section {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+.character-art {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.character-art pre {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.uncle-balloon {
+  margin-top: 10px;
+  font-size: 11px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--primary-color);
+  position: relative;
+  max-width: 180px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.status-item {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.status-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.status-value {
+  font-size: 18px;
+  font-family: var(--font-pixel);
+  font-weight: 700;
+}
+
+.gold-value {
+  color: #ffb703;
+}
+
+.gold-unit {
+  font-size: 12px;
+  color: #ffb703;
+  margin-left: 2px;
+}
+
+/* プログレスバー */
+.status-bar-container, .xp-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.status-bar-fill, .xp-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.fatigue-fill {
+  background-color: var(--danger-color);
+}
+
+.motivation-fill {
+  background-color: var(--success-color);
+}
+
+.xp-bar-fill {
+  background-color: #ffd166;
+}
+
+/* タブナビゲーション */
+.game-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+@media (min-width: 600px) {
+  .game-nav {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.nav-btn {
+  background-color: #3a3a3c;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  padding: 8px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.nav-btn:hover {
+  background-color: #48484a;
+}
+
+.nav-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-hover);
+  color: #000;
+}
+
+/* メインコンテンツエリア */
+.game-content {
+  min-height: 280px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--border-color);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.section-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 8px;
+  color: var(--primary-color);
+}
+
+.section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+/* 畑グリッド */
+.farm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 500px) {
+  .farm-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.farm-slot {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--border-color);
+  padding: 12px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
+.slot-title {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.slot-status {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.slot-body {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 50px;
+}
+
+.crop-icon-large {
+  font-size: 32px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.crop-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+}
+
+.crop-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.crop-time {
+  font-size: 12px;
+  font-family: var(--font-pixel);
+  color: #ffd166;
+}
+
+.fertilized-badge {
+  font-size: 10px;
+  background-color: var(--success-color);
+  color: #000;
+  padding: 1px 4px;
+  border-radius: 2px;
+  width: fit-content;
+  font-weight: bold;
+}
+
+.slot-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.slot-actions .single-btn {
+  grid-column: span 2;
+}
+
+/* 鍛冶屋タブ */
+.inventory-hint {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.inventory-hint h3 {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.material-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.material-chip {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.material-count {
+  font-family: var(--font-pixel);
+  font-weight: bold;
+  color: #ffb703;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 500px) {
+  .recipe-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.recipe-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--border-color);
+  padding: 12px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.recipe-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recipe-icon {
+  font-size: 24px;
+}
+
+.recipe-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.recipe-value {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.recipe-materials {
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.material-req {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.material-req.shortage {
+  color: var(--danger-color);
+}
+
+/* ボタン */
+.pixel-btn {
+  background-color: #48484a;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.pixel-btn:hover:not(:disabled) {
+  background-color: #636366;
+}
+
+.pixel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.accent-btn {
+  background-color: var(--accent-color);
+  border-color: #2b6194;
+}
+
+.accent-btn:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.danger-btn {
+  background-color: var(--danger-color);
+  border-color: #b02a37;
+}
+
+.danger-btn:hover:not(:disabled) {
+  background-color: #ff5c6c;
+}
+
+/* 売却テーブル */
+.weapon-list-container {
+  overflow-x: auto;
+}
+
+.pixel-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.pixel-table th, .pixel-table td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+}
+
+.pixel-table th {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.pixel-table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+.quality-badge {
+  font-family: var(--font-pixel);
+  font-weight: bold;
+}
+
+.quality-1 { color: var(--text-muted); }
+.quality-3 { color: var(--text-color); }
+.quality-5 { color: #ffd166; text-shadow: 0 0 2px rgba(255,209,102,0.3); }
+
+/* 商店 */
+.shop-section {
+  margin-bottom: 20px;
+}
+
+.shop-section h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media (min-width: 500px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.shop-item-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.item-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.item-cost {
+  font-size: 12px;
+  font-family: var(--font-pixel);
+  color: #ffb703;
+}
+
+/* 実績 */
+.achievement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.achievement-card {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.5;
+}
+
+.achievement-card.completed {
+  opacity: 1;
+  border-color: #ffd166;
+  background-color: rgba(255, 209, 102, 0.03);
+}
+
+.achievement-icon {
+  font-size: 24px;
+  filter: grayscale(100%);
+}
+
+.achievement-card.completed .achievement-icon {
+  filter: grayscale(0%);
+}
+
+.ach-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.ach-title {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.ach-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* 設定・デバッグ */
+.settings-box {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.settings-box h3 {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.debug-box {
+  border-color: #e07a5f;
+  background-color: rgba(224, 122, 95, 0.02);
+}
+
+.debug-box h3 {
+  color: var(--primary-color);
+}
+
+.debug-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.debug-btn {
+  background-color: #2c2c2e;
+  border-color: #e07a5f;
+}
+
+.debug-btn:hover {
+  background-color: #3a3a3c;
+}
+
+/* モーダル */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 10px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background-color: var(--panel-bg);
+  border: 3px double var(--border-color);
+  width: 100%;
+  max-width: 450px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 12px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.close-x-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 15px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ミニゲームUIスタイル */
+.forge-game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.forge-instruction {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.forge-gauge-container {
+  width: 100%;
+  height: 30px;
+  position: relative;
+  background-color: #333;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.forge-gauge-bar {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+/* ゲージ割合の指定 */
+.red-zone {
+  width: 100%;
+  background-color: #bd2a2a;
+}
+
+.yellow-zone {
+  left: 30%;
+  width: 40%;
+  background-color: #e0a92a;
+}
+
+.green-zone {
+  left: 45%;
+  width: 10%;
+  background-color: #2abd52;
+}
+
+.forge-cursor {
+  position: absolute;
+  top: -2px;
+  width: 6px;
+  height: 34px;
+  background-color: #fff;
+  border: 1px solid #000;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.forge-stats-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  gap: 2px;
+}
+
+/* 放置モーダル特有 */
+.offline-report-box {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.offline-report-box h3 {
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: var(--success-color);
+}
+
+.offline-report-box ul {
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+.offline-report-box li {
+  margin-bottom: 2px;
+}
+
+/* 種選択リスト */
+.seed-selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.seed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.seed-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+/* フッター */
+.game-footer {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+  margin-top: 5px;
+}
