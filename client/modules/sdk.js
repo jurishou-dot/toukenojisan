@@ -33,31 +33,13 @@ export async function initDiscordSdk() {
       await discordSdk.ready();
       console.log('Discord SDK is ready.');
 
-      // 簡易的な認可フローの試行（エラー時はゲストとしてフォールバック）
-      try {
-        const { code } = await discordSdk.commands.authorize({
-          client_id: clientId,
-          response_type: 'code',
-          state: '',
-          prompt: 'none',
-          scope: ['identify'],
-        });
-
-        // 本来はバックエンドでトークン交換を行うが、フロント単独のID特定用に
-        // クライアントから一時認証。エラー回避のため安全にフォールバックを設定
-        user = {
-          id: `discord_${discordSdk.instanceId || 'embed_user'}`,
-          username: 'Discord職人',
-          avatar: null
-        };
-      } catch (authErr) {
-        console.warn('Discord authorization skipped or failed, using mock embed user:', authErr);
-        user = {
-          id: 'discord_embedded_user',
-          username: '鍛冶屋おじさん(Discord)',
-          avatar: null
-        };
-      }
+      // 認証のポップアップブロック等による無限待機（フリーズ）を防ぐため、
+      // authorize() コマンドはスキップし、SDKのready情報から直接IDを決定して即座に返します。
+      user = {
+        id: `discord_${discordSdk.instanceId || 'embed_user'}`,
+        username: 'Discord職人おじさん',
+        avatar: null
+      };
 
       return { sdk: discordSdk, user, isEmbedded: true };
     } catch (error) {
