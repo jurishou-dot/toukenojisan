@@ -546,7 +546,7 @@ function renderShop() {
   ];
   
   upgradeItems.forEach(item => {
-    const currentLv = state.player.tools[item.id] || 1;
+    const currentLv = (state.player.tools || {})[item.id] || 1;
     const isMax = currentLv >= item.maxLevel;
     const cost = isMax ? 0 : currentLv * 500; // レベルアップ費用 (500G, 1000G, 1500G...)
     
@@ -606,7 +606,7 @@ function renderShop() {
   ];
   
   consumables.forEach(item => {
-    const currentOwned = state.inventory.materials[item.id] || 0;
+    const currentOwned = (state.inventory.materials || {})[item.id] || 0;
     const card = document.createElement('div');
     card.className = 'shop-item-card';
     card.innerHTML = `
@@ -798,8 +798,9 @@ function openPlantModal(slotId) {
   
   let hasSeed = false;
   
-  Object.keys(state.shop.seeds).forEach(oreId => {
-    const quantity = state.shop.seeds[oreId] || 0;
+  const seeds = state.shop?.seeds || {};
+  Object.keys(seeds).forEach(oreId => {
+    const quantity = seeds[oreId] || 0;
     if (quantity <= 0) return; // 所持していない種は非表示
     
     hasSeed = true;
@@ -833,7 +834,7 @@ function plantSeed(oreId) {
   if (plantingSlotId === null || !state) return;
   
   // 種の消費
-  if (state.shop.seeds[oreId] > 0) {
+  if (state.shop?.seeds && state.shop.seeds[oreId] > 0) {
     state.shop.seeds[oreId]--;
     
     const slot = state.farm.slots.find(s => s.id === plantingSlotId);
@@ -854,11 +855,13 @@ function plantSeed(oreId) {
  * 肥料を使用します。
  */
 function useFertilizer(slotId) {
-  if (!state || state.inventory.materials.fertilizer <= 0) return;
+  if (!state || (state.inventory?.materials?.fertilizer || 0) <= 0) return;
   
   const slot = state.farm.slots.find(s => s.id === slotId);
   if (slot && slot.oreId && !slot.hasFertilizer && slot.progress < 1) {
-    state.inventory.materials.fertilizer--;
+    if (state.inventory?.materials) {
+      state.inventory.materials.fertilizer--;
+    }
     slot.hasFertilizer = true;
     
     // 進行度を肥料込みで再計算するために、植え付け時間を再調整
@@ -884,7 +887,9 @@ function harvestOre(slotId) {
     const ore = ORES[oreId];
     
     // インベントリに追加
-    state.inventory.materials[oreId] = (state.inventory.materials[oreId] || 0) + 1;
+    if (state.inventory?.materials) {
+      state.inventory.materials[oreId] = (state.inventory.materials[oreId] || 0) + 1;
+    }
     
     // スロットのクリア
     slot.oreId = null;
@@ -894,7 +899,7 @@ function harvestOre(slotId) {
     
     // 疲労上昇 (お世話・収穫時の軽い労働疲労: +3)
     // 魔法の水桶による補正 (疲労蓄積軽減)
-    const bucketLv = state.player.tools.bucket || 1;
+    const bucketLv = state.player.tools?.bucket || 1;
     const fatigueCost = Math.max(1, 3 - Math.floor(bucketLv * 0.5));
     state.player.fatigue = Math.min(100, state.player.fatigue + fatigueCost);
     
@@ -916,12 +921,14 @@ function startForging(recipe) {
   }
   
   // 素材消費
-  Object.keys(recipe.materials).forEach(matId => {
-    state.inventory.materials[matId] -= recipe.materials[matId];
-  });
+  if (state.inventory?.materials) {
+    Object.keys(recipe.materials).forEach(matId => {
+      state.inventory.materials[matId] -= recipe.materials[matId];
+    });
+  }
   
   // 疲労上昇（超高性能炉のレベルに応じて消費疲労が軽減される）
-  const furnaceLv = state.player.tools.furnace || 1;
+  const furnaceLv = state.player.tools?.furnace || 1;
   const fatigueCost = Math.max(5, 18 - (furnaceLv * 2.5)); // レベルアップで15→12→10...と軽減される
   
   state.player.fatigue = Math.min(100, state.player.fatigue + fatigueCost);
@@ -971,9 +978,11 @@ function onForgeComplete(recipe, result) {
   }
   
   // 累計作成数の加算
-  state.player.stats.totalCrafted++;
-  if (recipe.id === 'holy_sword') {
-    state.player.stats.craftedHolySword = true;
+  if (state.player.stats) {
+    state.player.stats.totalCrafted++;
+    if (recipe.id === 'holy_sword') {
+      state.player.stats.craftedHolySword = true;
+    }
   }
   
   // レベルアップチェック
